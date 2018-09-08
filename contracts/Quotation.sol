@@ -46,6 +46,8 @@ contract Quotation is Iupgradable {
 
     event RefundEvent(address indexed user, bool indexed status, uint holdedCoverID, bytes32 reason);
 
+    function () public payable {}
+
     function changeMasterAddress(address _add) {
         if (masterAddress == 0x000) {
             masterAddress = _add;
@@ -93,8 +95,6 @@ contract Quotation is Iupgradable {
         pd = PoolData(ms.versionContractAddress(currentVersion, "PD"));
 
     }
-
-    function () public payable {}
 
     /// @dev Expires a cover after a set period of time.
     /// @dev Changes the status of the Cover and reduces the current sum assured of all areas in which the quotation lies
