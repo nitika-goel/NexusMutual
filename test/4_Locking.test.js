@@ -49,7 +49,6 @@ contract('NXMToken:Locking', function([
     describe('Lock Tokens under Claim Assesment', function() {
       let initialLockedTokens;
       let initialTokenBalance;
-      //let eventlogs;
       it('should have zero initialLockedTokens', async function() {
         initialLockedTokens = await nxmtk1.tokensLocked(
           member1,
@@ -204,6 +203,23 @@ contract('NXMToken:Locking', function([
           initialTokenBalance.plus(initialLockedTokens)
         );
       });
+    });
+  });
+
+  describe('Change Lock', async function() {
+    const lockTokens = ether(2);
+    const validity = duration.days(30);
+    before(async function() {
+      await nxmtk1.lock(CLA, lockTokens, validity, {
+        from: member1
+      });
+    });
+    it('Reduce validity of locked tokens', async function() {
+      await nxmtk1.reduceLock(CLA, member1, await duration.days(1));
+      const newValidity = (await nxmtd.locked(member1, CLA))[0];
+      newValidity.should.be.bignumber.below(
+        await latestTime() + validity
+      );
     });
   });
 
